@@ -1,3 +1,7 @@
+* {
+  font-family: andale mono, monospace;
+}
+
 body {
   display: flex;
   justify-content: center;
@@ -5,7 +9,6 @@ body {
   height: 100vh;
   margin: 0px;
   background-color: #122620;
-  font-family: andale mono, monospace;
 }
 
 #calculator {
@@ -27,7 +30,7 @@ body {
   justify-content: space-between;
   width: auto;
   height: 80px;
-  padding: 10px;
+  padding: 10px 10px 10px 0px;
   border-radius: 16px;
   border: 4px solid #b68d40;
   background-color: #122620;
@@ -79,15 +82,8 @@ body {
   font-size: 35px;
 }
 
-#buttons #back-button {
-  padding-bottom: 15px;
-  font-size: 50px;
-}
-
-#buttons #sign-button {
-  font-size: 45px;
-}
-
+#buttons #sign-button
+#buttons #back-button,
 #buttons #sub-button {
   font-size: 50px;
   padding-bottom: 5px;
