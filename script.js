@@ -91,7 +91,7 @@ function backEntry() {
   const [entry, history] = getDisplay();
 
   entry.textContent = entry.textContent.slice(0, -1);
-  if (entry.textContent === "") {
+  if (entry.textContent === "" || entry.textContent === "-") {
     if (history.textContent !== "") {
       historyToEntry();
     } else {
