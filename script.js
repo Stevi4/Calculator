@@ -169,8 +169,7 @@ function entryToHistory() {
   const [entry, history] = getDisplay();
   const [variable, operator] = parseExpression(entry.textContent);
 
-  const newHistory = variable + " " + operator;
-  history.textContent = newHistory;
+  history.textContent = variable + " " + operator;
   entry.textContent = "0";
 }
 
@@ -178,8 +177,7 @@ function historyToEntry() {
   const [entry, history] = getDisplay();
   const [variable, operator] = parseExpression(history.textContent);
 
-  const newEntry = variable + operator;
-  entry.textContent = newEntry;
+  entry.textContent = variable + operator;
   history.textContent = "";
 }
 
@@ -254,7 +252,7 @@ function keyPressed(event) {
 }
 
 function addButtonEvent(element, func) {
-  element.addEventListener("mousedown", buttonPressed);
+  element.onmousedown = buttonPressed;
   element.func = func;
 }
 
@@ -269,7 +267,7 @@ function initialize() {
     "±": (a) => 0 - a,
   };
 
-  document.addEventListener("keydown", keyPressed);
+  document.onkeydown = keyPressed;
 
   const numButtons = calculator.getElementsByClassName("num-button");
   const oprButtons = calculator.getElementsByClassName("opr-button");
