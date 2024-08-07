@@ -114,14 +114,15 @@ function clearEntry() {
 
 // Reduces the length of a number string if it exceeds the calculator's limit
 function truncate(num) {
+  let numString = num.toString();
   // Round floating-point errors
-  num = +num.toFixed(10);
-  numString = num.toString();
+  if (!numString.includes("e")) {
+    num = +num.toFixed(10);
+    numString = num.toString();
+  }
 
   const max = numString.at(0) === "-" ? 13 : 12;
-
   if (numString.length > max) {
-    let num = +numString;
     numString = num.toPrecision(11);
 
     // Reduce precision to fit space if scientific notation is used
@@ -144,20 +145,18 @@ function parseExpression(expression) {
   }
 }
 
-// Clears the screen if it meets the below cases, can move entry to history for numeric inputs
-// Returns true if screen is cleared
+// Clears the screen if it meets the below cases
+// Can move entry to history for numeric inputs
 function entryCheck(numeric = false) {
-  if (clearIfError()) {
-    return true;
-  }
+  clearIfError();
 
   const [entry] = getDisplay();
   if (hasEndOperator(entry.textContent)) {
     if (numeric) {
       entryToHistory();
     }
-  } else if (clearIfComplete()) {
-    return true;
+  } else {
+    clearIfComplete();
   }
 }
 
@@ -166,7 +165,6 @@ function clearIfComplete() {
   const [, history] = getDisplay();
   if (history.textContent.at(-1) === "=") {
     clear();
-    return true;
   }
 }
 
@@ -175,7 +173,6 @@ function clearIfError() {
   const [entry] = getDisplay();
   if (entry.textContent === "Error") {
     clear();
-    return true;
   }
 }
 
@@ -225,7 +222,9 @@ function buttonPressed(event) {
 // Called when the mouse is released after clicking a calculator button
 function releaseButton(event) {
   const button = document.querySelector(".pressed");
-  button.classList.toggle("pressed");
+  if (button) {
+    button.classList.toggle("pressed");
+  }
   event.currentTarget.removeEventListener("mouseup", releaseButton);
 }
 
