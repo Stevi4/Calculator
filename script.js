@@ -23,6 +23,9 @@ function initialize() {
   document
     .getElementById("back-button")
     .addEventListener("mousedown", backEntry);
+  document
+    .getElementById("decimal-button")
+    .addEventListener("mousedown", enterDecimal);
 }
 
 function operate(a, b, operator) {
@@ -35,14 +38,24 @@ function enterNumber(numChar) {
   let text = entry.textContent;
   if (text.length >= 12) {
     return;
-  }
-  if (text === "0") {
+  } else if (text === "0") {
     if (numChar === "0") {
       return;
     }
     text = "";
   }
   entry.textContent = text.concat(numChar);
+}
+
+function enterDecimal() {
+  const entry = document.getElementById("entry");
+  let text = entry.textContent;
+  if (text.length >= 12) {
+    return;
+  } else if (text.includes(".")) {
+    return;
+  }
+  entry.textContent = text.concat(".");
 }
 
 function clearEntry() {
