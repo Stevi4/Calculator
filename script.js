@@ -3,6 +3,11 @@ function operate(a, b, operator) {
   return calculator.operation[operator](a, b);
 }
 
+function operateSingle(a, operator) {
+  const calculator = document.getElementById("calculator");
+  return calculator.operation[operator](a);
+}
+
 function evaluate() {
   const [entry, history] = getDisplay();
 
@@ -67,6 +72,20 @@ function enterOperator(oprChar) {
   entry.textContent = text + oprChar;
 }
 
+function enterSingleOperator(oprChar) {
+  entryCheck(true);
+  const [entry] = getDisplay();
+
+  const [a, operator] = parseExpression(entry.textContent);
+
+  const result = operateSingle(+a, oprChar);
+  if (result === Infinity || result === NaN) {
+    entry.textContent = "Error";
+  } else {
+    entry.textContent = truncate(result) + operator;
+  }
+}
+
 function backEntry() {
   entryCheck();
   const [entry, history] = getDisplay();
@@ -113,10 +132,12 @@ function truncate(num) {
   return numString;
 }
 
-// Parses a string containing the first variable and operand for an expression
-// Returns [variable, operand]
+// Parses a string containing the first variable and operator for an expression
+// Returns [variable, operator]
 function parseExpression(expression) {
-  if (expression.at(-2) === " ") {
+  if (!hasEndOperator(expression)) {
+    return [expression, ""];
+  } else if (expression.at(-2) === " ") {
     return [expression.slice(0, -2), expression.slice(-1)];
   } else {
     return [expression.slice(0, -1), expression.slice(-1)];
@@ -166,18 +187,18 @@ function clear() {
 
 function entryToHistory() {
   const [entry, history] = getDisplay();
-  const [variable, operand] = parseExpression(entry.textContent);
+  const [variable, operator] = parseExpression(entry.textContent);
 
-  const newHistory = variable + " " + operand;
+  const newHistory = variable + " " + operator;
   history.textContent = newHistory;
   entry.textContent = "0";
 }
 
 function historyToEntry() {
   const [entry, history] = getDisplay();
-  const [variable, operand] = parseExpression(history.textContent);
+  const [variable, operator] = parseExpression(history.textContent);
 
-  const newEntry = variable + operand;
+  const newEntry = variable + operator;
   entry.textContent = newEntry;
   history.textContent = "";
 }
@@ -216,6 +237,10 @@ function oprButtonPressed(event) {
   enterOperator(event.target.textContent);
 }
 
+function singleOprButtonPressed(event) {
+  enterSingleOperator(event.target.textContent);
+}
+
 function initialize() {
   const calculator = document.getElementById("calculator");
   calculator.operation = {
@@ -223,6 +248,8 @@ function initialize() {
     "–": (a, b) => a - b,
     X: (a, b) => a * b,
     "÷": (a, b) => a / b,
+    "%": (a) => a / 100,
+    "±": (a) => 0 - a,
   };
 
   const buttons = calculator.getElementsByTagName("button");
@@ -238,6 +265,11 @@ function initialize() {
   const oprButtons = calculator.getElementsByClassName("opr-button");
   for (let button of oprButtons) {
     button.addEventListener("mousedown", oprButtonPressed);
+  }
+
+  const singleOprButtons = calculator.getElementsByClassName("s-opr-button");
+  for (let button of singleOprButtons) {
+    button.addEventListener("mousedown", singleOprButtonPressed);
   }
 
   const acButton = document.getElementById("ac-button");
