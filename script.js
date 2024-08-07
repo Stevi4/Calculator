@@ -41,6 +41,25 @@ function operate(a, b, operator) {
   return calculator.operation[operator](a, b);
 }
 
+function truncate(num) {
+  // Round floating-point errors
+  num = +num.toFixed(10);
+  numString = num.toString();
+
+  const max = numString.at(0) === "-" ? 13 : 12;
+
+  if (numString.length > max) {
+    let num = +numString;
+    numString = num.toPrecision(11);
+
+    // Reduce precision to fit space if scientific notation is used
+    if (numString.length > max) {
+      numString = num.toPrecision(11 - (numString.length - max));
+    }
+  }
+  return numString;
+}
+
 function evaluate() {
   const entry = document.getElementById("entry");
   const history = document.getElementById("history");
@@ -49,9 +68,9 @@ function evaluate() {
     const [a, operator] = parseExpression(history.textContent);
     const b = entry.textContent;
 
-    const result = operate(+a, +b, operator).toString();
+    const result = operate(+a, +b, operator);
     history.textContent = history.textContent + " " + entry.textContent + " =";
-    entry.textContent = result;
+    entry.textContent = truncate(result);
   }
 }
 
