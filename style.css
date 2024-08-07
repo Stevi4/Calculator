@@ -43,11 +43,11 @@ body {
 }
 
 #entry {
-  font-size: 40px;
+  font-size: 38px;
 }
 
 #history {
-  font-size: 18px;
+  font-size: 16px;
   opacity: 0.5;
 }
 
@@ -86,7 +86,8 @@ body {
   font-size: 35px;
 }
 
-#buttons #sign-button #buttons #back-button,
+#buttons #sign-button,
+#buttons #back-button,
 #buttons #sub-button {
   font-size: 50px;
   padding-bottom: 5px;
