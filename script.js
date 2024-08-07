@@ -7,11 +7,22 @@ function initialize() {
     "÷": (a, b) => a / b,
   };
 
-  const numButtons = document.getElementsByClassName("num-button");
-  for (let button of numButtons) {
-    button.addEventListener("mousedown", numButtonPressed);
+  const buttons = calculator.getElementsByTagName("button");
+  for (let button of buttons) {
     button.addEventListener("mousedown", buttonPressed);
   }
+
+  const numButtons = calculator.getElementsByClassName("num-button");
+  for (let button of numButtons) {
+    button.addEventListener("mousedown", numButtonPressed);
+  }
+
+  document
+    .getElementById("ac-button")
+    .addEventListener("mousedown", clearEntry);
+  document
+    .getElementById("back-button")
+    .addEventListener("mousedown", backEntry);
 }
 
 function operate(a, b, operator) {
@@ -34,16 +45,31 @@ function enterNumber(numChar) {
   entry.textContent = text.concat(numChar);
 }
 
+function clearEntry() {
+  const entry = document.getElementById("entry");
+  entry.textContent = "0";
+}
+
+function backEntry() {
+  const entry = document.getElementById("entry");
+  entry.textContent = entry.textContent.slice(0, -1);
+  if (entry.textContent === "") {
+    entry.textContent = "0";
+  }
+}
+
 function numButtonPressed(event) {
   enterNumber(event.target.textContent);
 }
 
+// Called when any calculator button is pressed
 function buttonPressed(event) {
   event.target.classList.toggle("pressed");
   const body = document.querySelector("body");
   body.addEventListener("mouseup", releaseButton);
 }
 
+// Called when the mouse is released after clicking a calculator button
 function releaseButton(event) {
   const button = document.querySelector(".pressed");
   button.classList.toggle("pressed");
