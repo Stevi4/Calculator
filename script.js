@@ -22,18 +22,14 @@ function initialize() {
     button.addEventListener("mousedown", oprButtonPressed);
   }
 
-  document
-    .getElementById("ac-button")
-    .addEventListener("mousedown", clearEntry);
-  document
-    .getElementById("back-button")
-    .addEventListener("mousedown", backEntry);
-  document
-    .getElementById("decimal-button")
-    .addEventListener("mousedown", enterDecimal);
-  document
-    .getElementById("equal-button")
-    .addEventListener("mousedown", evaluate);
+  const acButton = document.getElementById("ac-button");
+  acButton.addEventListener("mousedown", clearEntry);
+  const backButton = document.getElementById("back-button");
+  backButton.addEventListener("mousedown", backEntry);
+  const decimalButton = document.getElementById("decimal-button");
+  decimalButton.addEventListener("mousedown", enterDecimal);
+  const equalButton = document.getElementById("equal-button");
+  equalButton.addEventListener("mousedown", evaluate);
 }
 
 function operate(a, b, operator) {
@@ -70,18 +66,18 @@ function evaluate() {
 
     const result = operate(+a, +b, operator);
     history.textContent = history.textContent + " " + entry.textContent + " =";
-    entry.textContent = truncate(result);
+    if (result === Infinity || result === NaN) {
+      entry.textContent = "Error";
+    } else {
+      entry.textContent = truncate(result);
+    }
   }
 }
 
 function enterNumber(numChar) {
-  const entry = document.getElementById("entry");
-  if (hasEndOperator(entry.textContent)) {
-    entryToHistory();
-  } else {
-    clearIfComplete();
-  }
+  entryCheck(true);
 
+  const entry = document.getElementById("entry");
   let text = entry.textContent;
   const max = text.at(0) === "-" ? 13 : 12;
 
@@ -95,14 +91,9 @@ function enterNumber(numChar) {
 }
 
 function enterDecimal() {
+  entryCheck(true);
+
   const entry = document.getElementById("entry");
-
-  if (hasEndOperator(entry.textContent)) {
-    enterNumber("0");
-  } else {
-    clearIfComplete();
-  }
-
   let text = entry.textContent;
   const max = text.at(0) === "-" ? 13 : 12;
 
@@ -112,10 +103,12 @@ function enterDecimal() {
     return;
   }
 
-  entry.textContent = text.concat(".");
+  entry.textContent = text + ".";
 }
 
 function enterOperator(oprChar) {
+  clearIfError();
+
   const history = document.getElementById("history");
   if (hasEndOperator(history.textContent)) {
     evaluate();
@@ -126,7 +119,39 @@ function enterOperator(oprChar) {
   if (hasEndOperator(text)) {
     text = text.slice(0, -1);
   }
-  if (hasEndOperator) entry.textContent = text.concat(oprChar);
+  
+  entry.textContent = text.concat(oprChar);
+}
+
+function backEntry() {
+  entryCheck();
+
+  const entry = document.getElementById("entry");
+  const history = document.getElementById("history");
+
+  entry.textContent = entry.textContent.slice(0, -1);
+  if (entry.textContent === "") {
+    if (history.textContent !== "") {
+      historyToEntry();
+    } else {
+      entry.textContent = "0";
+    }
+  }
+}
+
+function clearEntry() {
+  if (entryCheck()) {
+    return;
+  }
+
+  const entry = document.getElementById("entry");
+  const history = document.getElementById("history");
+
+  if (entry.textContent === "0") {
+    history.textContent = "";
+  } else {
+    entry.textContent = "0";
+  }
 }
 
 function entryToHistory() {
@@ -136,7 +161,7 @@ function entryToHistory() {
 
   const newHistory = variable + " " + operand;
   history.textContent = newHistory;
-  entry.textContent = "";
+  entry.textContent = "0";
 }
 
 function historyToEntry() {
@@ -149,35 +174,6 @@ function historyToEntry() {
   history.textContent = "";
 }
 
-function clearEntry() {
-  const entry = document.getElementById("entry");
-  const history = document.getElementById("history");
-
-  if ((entry.textContent === "0")) {
-    history.textContent = "";
-  } else {
-    entry.textContent = "0";
-  }
-}
-
-function backEntry() {
-  const entry = document.getElementById("entry");
-  const history = document.getElementById("history");
-
-  if (!hasEndOperator(entry.textContent)) {
-    clearIfComplete();
-  }
-
-  entry.textContent = entry.textContent.slice(0, -1);
-  if (entry.textContent === "") {
-    if (history.textContent !== "") {
-      historyToEntry();
-    } else {
-      entry.textContent = "0";
-    }
-  }
-}
-
 // Parses a string containing the first variable and operand for an expression
 // Returns [variable, operand]
 function parseExpression(expression) {
@@ -188,13 +184,47 @@ function parseExpression(expression) {
   }
 }
 
+// Clears the screen if it meets the below cases
+// Can move entry to history for numeric inputs
+// Returns true if screen is cleared
+function entryCheck(numeric = false) {
+  if (clearIfError()) {
+    return true;
+  }
+
+  const entry = document.getElementById("entry");
+  if (hasEndOperator(entry.textContent)) {
+    if (numeric) {
+      entryToHistory();
+    }
+  } else if (clearIfComplete()) {
+    return true;
+  }
+}
+
 // Clears the screen if the history shows a complete expression
 function clearIfComplete() {
   const history = document.getElementById("history");
   if (history.textContent.at(-1) === "=") {
-    history.textContent = "";
-    entry.textContent = "0";
+    clear();
+    return true;
   }
+}
+
+// Clears the screen if it has an error message
+function clearIfError() {
+  const entry = document.getElementById("entry");
+  if (entry.textContent === "Error") {
+    clear();
+    return true;
+  }
+}
+
+function clear() {
+  const entry = document.getElementById("entry");
+  const history = document.getElementById("history");
+  history.textContent = "";
+  entry.textContent = "0";
 }
 
 // Checks if a string has an operator at the end
