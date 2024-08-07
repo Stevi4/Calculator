@@ -14,10 +14,9 @@ function evaluate() {
   if (hasEndOperator(history.textContent)) {
     const [a, operator] = parseExpression(history.textContent);
     const b = entry.textContent;
-
     const result = operate(+a, +b, operator);
-    history.textContent = history.textContent + " " + entry.textContent + " =";
 
+    history.textContent = history.textContent + " " + entry.textContent + " =";
     if (result === Infinity || result === NaN) {
       entry.textContent = "Error";
     } else {
@@ -37,7 +36,6 @@ function enterNumber(numChar) {
   } else if (text.length >= max) {
     return;
   }
-
   entry.textContent = text + numChar;
 }
 
@@ -52,7 +50,6 @@ function enterDecimal() {
   } else if (text.length >= max) {
     return;
   }
-
   entry.textContent = text + ".";
 }
 
@@ -63,19 +60,16 @@ function enterOperator(oprChar) {
   if (hasEndOperator(history.textContent)) {
     evaluate();
   }
-
   let text = entry.textContent;
   if (hasEndOperator(text)) {
     text = text.slice(0, -1);
   }
-
   entry.textContent = text + oprChar;
 }
 
 function enterSingleOperator(oprChar) {
   entryCheck(true);
   const [entry] = getDisplay();
-
   const [a, operator] = parseExpression(entry.textContent);
 
   const result = operateSingle(+a, oprChar);
@@ -124,7 +118,6 @@ function truncate(num) {
   const max = numString.at(0) === "-" ? 13 : 12;
   if (numString.length > max) {
     numString = num.toPrecision(11);
-
     // Reduce precision to fit space if scientific notation is used
     if (numString.length > max) {
       numString = num.toPrecision(11 - (numString.length - max));
@@ -149,7 +142,6 @@ function parseExpression(expression) {
 // Can move entry to history for numeric inputs
 function entryCheck(numeric = false) {
   clearIfError();
-
   const [entry] = getDisplay();
   if (hasEndOperator(entry.textContent)) {
     if (numeric) {
@@ -240,6 +232,50 @@ function singleOprButtonPressed(event) {
   enterSingleOperator(event.target.textContent);
 }
 
+function keyPressed(event) {
+  const key = event.key;
+  if (key >= "0" && key <= "9") {
+    enterNumber(key);
+  } else {
+    switch (key) {
+      case ".":
+        enterDecimal();
+        break;
+      case "+":
+      case "-":
+        enterOperator(key);
+        break;
+      case "*":
+        enterOperator("X");
+        break;
+      case "/":
+        enterOperator("÷");
+        break;
+      case "%":
+        enterSingleOperator("%");
+        break;
+      case "!":
+        enterSingleOperator("±");
+        break;
+      case "=":
+      case "Enter":
+        evaluate();
+        break;
+      case "Backspace":
+        backEntry();
+        break;
+      case "a":
+      case "c":
+        clearEntry();
+        break;
+    }
+  }
+}
+
+function addMouseDownEvent(element, func) {
+  element.addEventListener("mousedown", func);
+}
+
 function initialize() {
   const calculator = document.getElementById("calculator");
   calculator.operation = {
@@ -251,34 +287,28 @@ function initialize() {
     "±": (a) => 0 - a,
   };
 
+  document.addEventListener("keydown", keyPressed);
+
   const buttons = calculator.getElementsByTagName("button");
-  for (let button of buttons) {
-    button.addEventListener("mousedown", buttonPressed);
-  }
-
   const numButtons = calculator.getElementsByClassName("num-button");
-  for (let button of numButtons) {
-    button.addEventListener("mousedown", numButtonPressed);
-  }
-
   const oprButtons = calculator.getElementsByClassName("opr-button");
-  for (let button of oprButtons) {
-    button.addEventListener("mousedown", oprButtonPressed);
-  }
-
   const singleOprButtons = calculator.getElementsByClassName("s-opr-button");
-  for (let button of singleOprButtons) {
-    button.addEventListener("mousedown", singleOprButtonPressed);
+  for (let button of buttons) {
+    addMouseDownEvent(button, buttonPressed);
   }
-
-  const acButton = document.getElementById("ac-button");
-  acButton.addEventListener("mousedown", clearEntry);
-  const backButton = document.getElementById("back-button");
-  backButton.addEventListener("mousedown", backEntry);
-  const decimalButton = document.getElementById("decimal-button");
-  decimalButton.addEventListener("mousedown", enterDecimal);
-  const equalButton = document.getElementById("equal-button");
-  equalButton.addEventListener("mousedown", evaluate);
+  for (let button of numButtons) {
+    addMouseDownEvent(button, numButtonPressed);
+  }
+  for (let button of oprButtons) {
+    addMouseDownEvent(button, oprButtonPressed);
+  }
+  for (let button of singleOprButtons) {
+    addMouseDownEvent(button, singleOprButtonPressed);
+  }
+  addMouseDownEvent(document.getElementById("ac-button"), clearEntry);
+  addMouseDownEvent(document.getElementById("back-button"), backEntry);
+  addMouseDownEvent(document.getElementById("decimal-button"), enterDecimal);
+  addMouseDownEvent(document.getElementById("equal-button"), evaluate);
 }
 
 initialize();
