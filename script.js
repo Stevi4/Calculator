@@ -3,11 +3,6 @@ function operate(a, b, operator) {
   return calculator.operation[operator](a, b);
 }
 
-function operateSingle(a, operator) {
-  const calculator = document.getElementById("calculator");
-  return calculator.operation[operator](a);
-}
-
 function evaluate() {
   const [entry, history] = getDisplay();
 
@@ -28,29 +23,26 @@ function evaluate() {
 function enterNumber(numChar) {
   entryCheck(true);
   const [entry] = getDisplay();
-  let text = entry.textContent;
-  const max = text.at(0) === "-" ? 13 : 12;
+  const max = entry.textContent.at(0) === "-" ? 13 : 12;
 
-  if (text === "0") {
-    text = "";
-  } else if (text.length >= max) {
+  if (entry.textContent.length >= max) {
     return;
+  } else if (entry.textContent === "0") {
+    entry.textContent = numChar;
+  } else {
+    entry.textContent += numChar;
   }
-  entry.textContent = text + numChar;
 }
 
 function enterDecimal() {
   entryCheck(true);
   const [entry] = getDisplay();
-  let text = entry.textContent;
-  const max = text.at(0) === "-" ? 13 : 12;
+  const max = entry.textContent.at(0) === "-" ? 13 : 12;
 
-  if (text.includes(".")) {
-    return;
-  } else if (text.length >= max) {
+  if (entry.textContent.length >= max || entry.textContent.includes(".")) {
     return;
   }
-  entry.textContent = text + ".";
+  entry.textContent += ".";
 }
 
 function enterOperator(oprChar) {
@@ -60,11 +52,10 @@ function enterOperator(oprChar) {
   if (hasEndOperator(history.textContent)) {
     evaluate();
   }
-  let text = entry.textContent;
-  if (hasEndOperator(text)) {
-    text = text.slice(0, -1);
+  if (hasEndOperator(entry.textContent)) {
+    entry.textContent = entry.textContent.slice(0, -1);
   }
-  entry.textContent = text + oprChar;
+  entry.textContent += oprChar;
 }
 
 function enterSingleOperator(oprChar) {
@@ -72,7 +63,7 @@ function enterSingleOperator(oprChar) {
   const [entry] = getDisplay();
   const [a, operator] = parseExpression(entry.textContent);
 
-  const result = operateSingle(+a, oprChar);
+  const result = operate(+a, null, oprChar);
   if (result === Infinity || result === NaN) {
     entry.textContent = "Error";
   } else {
@@ -209,6 +200,8 @@ function buttonPressed(event) {
   event.target.classList.toggle("pressed");
   const body = document.querySelector("body");
   body.addEventListener("mouseup", releaseButton);
+
+  event.target.func(event.target.textContent);
 }
 
 // Called when the mouse is released after clicking a calculator button
@@ -218,18 +211,6 @@ function releaseButton(event) {
     button.classList.toggle("pressed");
   }
   event.currentTarget.removeEventListener("mouseup", releaseButton);
-}
-
-function numButtonPressed(event) {
-  enterNumber(event.target.textContent);
-}
-
-function oprButtonPressed(event) {
-  enterOperator(event.target.textContent);
-}
-
-function singleOprButtonPressed(event) {
-  enterSingleOperator(event.target.textContent);
 }
 
 function keyPressed(event) {
@@ -272,8 +253,9 @@ function keyPressed(event) {
   }
 }
 
-function addMouseDownEvent(element, func) {
-  element.addEventListener("mousedown", func);
+function addButtonEvent(element, func) {
+  element.addEventListener("mousedown", buttonPressed);
+  element.func = func;
 }
 
 function initialize() {
@@ -289,26 +271,22 @@ function initialize() {
 
   document.addEventListener("keydown", keyPressed);
 
-  const buttons = calculator.getElementsByTagName("button");
   const numButtons = calculator.getElementsByClassName("num-button");
   const oprButtons = calculator.getElementsByClassName("opr-button");
   const singleOprButtons = calculator.getElementsByClassName("s-opr-button");
-  for (let button of buttons) {
-    addMouseDownEvent(button, buttonPressed);
-  }
   for (let button of numButtons) {
-    addMouseDownEvent(button, numButtonPressed);
+    addButtonEvent(button, enterNumber);
   }
   for (let button of oprButtons) {
-    addMouseDownEvent(button, oprButtonPressed);
+    addButtonEvent(button, enterOperator);
   }
   for (let button of singleOprButtons) {
-    addMouseDownEvent(button, singleOprButtonPressed);
+    addButtonEvent(button, enterSingleOperator);
   }
-  addMouseDownEvent(document.getElementById("ac-button"), clearEntry);
-  addMouseDownEvent(document.getElementById("back-button"), backEntry);
-  addMouseDownEvent(document.getElementById("decimal-button"), enterDecimal);
-  addMouseDownEvent(document.getElementById("equal-button"), evaluate);
+  addButtonEvent(document.getElementById("ac-button"), clearEntry);
+  addButtonEvent(document.getElementById("back-button"), backEntry);
+  addButtonEvent(document.getElementById("decimal-button"), enterDecimal);
+  addButtonEvent(document.getElementById("equal-button"), evaluate);
 }
 
 initialize();
