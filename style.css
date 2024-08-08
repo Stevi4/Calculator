@@ -6,16 +6,23 @@
   --extension-color: #ffa69e;
 }
 
-* {
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+  margin: 0px;
+}
+
+#main * {
   font-family: "DejaVu Sans Mono", monospace;
 }
 
-body {
+#main {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  margin: 0px;
+  flex: 1;
   background-color: var(--primary-color);
 }
 
@@ -187,4 +194,43 @@ body {
 
 .filler {
   flex: 1;
+}
+
+#footer * {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+#footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100px;
+  background-color: var(--border-color);
+  border-top: 4px inset var(--border-color);
+}
+
+#footer > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+}
+
+#attribution {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 20px;
+  font-size: 30px;
+  background-color: var(--body-color);
+  border: 8px solid var(--extension-color);
+  border-radius: 16px;
+  color: var(--primary-color);
+}
+
+select {
+  font-size: 20px;
+  padding: 5px;
+  background-color: var(--body-color);
+  color: var(--primary-color);
 }
