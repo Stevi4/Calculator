@@ -1,6 +1,5 @@
 function operate(a, b, operator) {
-  const calculator = document.getElementById("calculator");
-  return calculator.operation[operator](a, b);
+  return document.getElementById("calculator").operation[operator](a, b);
 }
 
 function evaluate() {
@@ -16,6 +15,7 @@ function evaluate() {
       entry.textContent = "Error";
     } else {
       entry.textContent = truncate(result);
+      document.getElementById("calculator").answer = entry.textContent;
     }
   }
 }
@@ -69,6 +69,13 @@ function enterSingleOperator(oprChar) {
   } else {
     entry.textContent = truncate(result) + operator;
   }
+}
+
+function getLastAnswer() {
+  entryCheck(true);
+  const [entry] = getDisplay();
+
+  entry.textContent = document.getElementById("calculator").answer;
 }
 
 function backEntry() {
@@ -281,7 +288,9 @@ function initialize() {
     ln: (a) => Math.log(a),
     π: () => Math.PI,
     e: () => Math.E,
+    rnd: () => Math.random()
   };
+  calculator.answer = "0";
 
   document.onkeydown = keyPressed;
   const extensionTab = document.getElementById("extension-tab");
@@ -304,6 +313,7 @@ function initialize() {
   addButtonEvent(document.getElementById("back-button"), backEntry);
   addButtonEvent(document.getElementById("decimal-button"), enterDecimal);
   addButtonEvent(document.getElementById("equal-button"), evaluate);
+  addButtonEvent(document.getElementById("answer-button"), getLastAnswer);
 }
 
 initialize();
