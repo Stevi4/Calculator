@@ -219,10 +219,13 @@ function initialize() {
   };
   calculator.answer = "0";
 
-  document.onkeydown = keyPressed;
+  const extension = document.getElementById("extension");
+  extension.inAnimation = false;
+  extension.onanimationend = animationFlagOff;
   const extensionTab = document.getElementById("extension-tab");
   extensionTab.onmousedown = toggleExtension;
   extensionTab.style.cursor = "pointer";
+  document.onkeydown = keyPressed;
 
   const numButtons = document.getElementsByClassName("num-button");
   const oprButtons = document.getElementsByClassName("opr-button");
@@ -244,8 +247,23 @@ function initialize() {
 }
 
 function toggleExtension() {
-  const extension = document.getElementById("extension-buttons");
-  extension.classList.toggle("hidden");
+  const extension = document.getElementById("extension");
+  if (!extension.inAnimation) {
+    if (
+      extension.classList.contains("hidden") ||
+      extension.classList.contains("shown")
+    ) {
+      extension.classList.toggle("hidden");
+      extension.classList.toggle("shown");
+    } else {
+      extension.classList.toggle("shown");
+    }
+    extension.inAnimation = true;
+  }
+}
+
+function animationFlagOff(event) {
+  event.target.inAnimation = false;
 }
 
 function addButtonEvent(element, func) {

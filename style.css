@@ -119,6 +119,8 @@ body {
   align-items: center;
   flex: 1;
   margin-top: 126px;
+  position: relative;
+  left: 214px;
   filter: drop-shadow(4px 2px 1px rgba(0, 0, 0, 0.5));
 }
 
@@ -138,8 +140,26 @@ body {
   z-index: 0;
 }
 
-#extension-buttons.hidden {
-  display: none;
+@keyframes show-tab {
+  from {left: 214px;}
+  to {left: 0px;}
+}
+
+@keyframes hide-tab {
+  from {left: 0px;}
+  to {left: 214px;}
+}
+
+#extension.shown {
+  animation-name: show-tab;
+  animation-duration: 500ms;
+  left: 0px;
+}
+
+#extension.hidden {
+  animation-name: hide-tab;
+  animation-duration: 500ms;
+  left: 214px;
 }
 
 #extension-tab {
