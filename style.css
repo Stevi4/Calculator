@@ -217,7 +217,16 @@ body {
   background-color: var(--body-color);
   border: 8px solid var(--extension-color);
   border-radius: 16px;
+}
+
+#attribution a {
   color: var(--primary-color);
+  text-decoration: none;
+}
+
+#attribution img {
+  height: 25px;
+  width: auto;
 }
 
 select {
@@ -227,7 +236,7 @@ select {
   color: var(--primary-color);
 }
 
-body.light #attribution,
+body.light #attribution a,
 body.light select {
   color: var(--border-color);
 }
