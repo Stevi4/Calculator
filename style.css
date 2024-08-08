@@ -226,3 +226,8 @@ select {
   background-color: var(--body-color);
   color: var(--primary-color);
 }
+
+body.light #attribution,
+body.light select {
+  color: var(--border-color);
+}

@@ -221,8 +221,11 @@ function initialize() {
 
   const body = document.querySelector("body");
   body.themes = {
-    default: ["#ffffff", "#5c6b73", "#253237", "#9db4c0", "#f26419"],
-    dark: ["#000000", "#ffffff", "#e5e5e5", "#c6ac8f", "#242423"],
+    default: ["#f5f5f5", "#5c6b73", "#253237", "#9db4c0", "#e36414"],
+    dark: ["#000000", "#ffffff", "#999999", "#adc4d0", "#242423"],
+    pastel: ["#d1e9f6", "#ff9b85", "#ee6055", "#ffcad4", "#b298dc"],
+    chalkboard: ["#283618", "#dda15e", "#bc6c25", "#fefae0", "#606c38"],
+    dreamy: ["#3d348b", "#f7b801", "#f35b04", "#f18701", "#7678ed"],
     neopolitan: ["#300400", "#b8f2e6", "#aed9e0", "#faf3dd", "#ffa69e"],
   };
   setTheme(body.themes["default"]);
@@ -300,8 +303,14 @@ function releaseButton(event) {
 }
 
 function changeTheme(event) {
-  const theme = document.querySelector("body").themes[event.target.value];
-  setTheme(theme);
+  const body = document.querySelector("body");
+  const theme = event.target.value;
+  if (theme === "default" || theme === "pastel") {
+    body.classList.add("light");
+  } else {
+    body.classList.remove("light");
+  }
+  setTheme(body.themes[theme]);
 }
 
 function setTheme(theme) {
