@@ -1,5 +1,5 @@
 # Calculator
-An interactive calculator built using HTML5, CSS3, and JavaScript ES6.
+An interactive calculator built using HTML, CSS, and JavaScript.
 
 [Live Preview](https://stevi4.github.io/Calculator/)
 ![Calculator page](images/page.png)
@@ -26,5 +26,5 @@ An interactive calculator built using HTML5, CSS3, and JavaScript ES6.
 ## Acknowledements
 Inspired by [The Odin Project's](https://www.theodinproject.com/) Foundations course.
 ## License
-[MIT](LICENSE)
+[MIT](LICENSE)  
 ©2024 Stevi4
