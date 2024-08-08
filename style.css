@@ -84,6 +84,7 @@ body {
   border-radius: 8px;
   border: 2px outset var(--border-color);
   background-color: var(--secondary-color);
+  user-select: none;
   color: var(--primary-color);
   filter: drop-shadow(2px 1px 1px rgba(0, 0, 0, 0.5));
 }
