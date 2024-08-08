@@ -71,7 +71,7 @@ function enterSingleOperator(oprChar) {
   }
 }
 
-function getLastAnswer() {
+function enterLastAnswer() {
   entryCheck(true);
   const [entry] = getDisplay();
 
@@ -200,79 +200,6 @@ function hasEndOperator(str) {
   return (char < "0" || char > "9") && char !== "." && char !== "=";
 }
 
-// Called when any calculator button is pressed
-function buttonPressed(event) {
-  event.target.classList.toggle("pressed");
-  const body = document.querySelector("body");
-  body.addEventListener("mouseup", releaseButton);
-
-  event.target.func(event.target.textContent);
-}
-
-// Called when the mouse is released after clicking a calculator button
-function releaseButton(event) {
-  const button = document.querySelector(".pressed");
-  if (button) {
-    button.classList.toggle("pressed");
-  }
-  event.currentTarget.removeEventListener("mouseup", releaseButton);
-}
-
-function toggleExtension() {
-  const extension = document.getElementById("extension-buttons");
-  extension.classList.toggle("hidden");
-}
-
-function keyPressed(event) {
-  const key = event.key;
-  if (key >= "0" && key <= "9") {
-    enterNumber(key);
-  } else {
-    switch (key) {
-      case ".":
-        enterDecimal();
-        break;
-      case "+":
-      case "-":
-        enterOperator(key);
-        break;
-      case "*":
-        enterOperator("X");
-        break;
-      case "/":
-        enterOperator("÷");
-        break;
-      case "%":
-        enterSingleOperator("%");
-        break;
-      case "!":
-        enterSingleOperator("±");
-        break;
-      case "=":
-      case "Enter":
-        evaluate();
-        break;
-      case "Backspace":
-        backEntry();
-        break;
-      case "a":
-      case "c":
-        clearEntry();
-        break;
-      case "Tab":
-        event.preventDefault();
-        toggleExtension();
-        break;
-    }
-  }
-}
-
-function addButtonEvent(element, func) {
-  element.onmousedown = buttonPressed;
-  element.style.cursor = "pointer";
-  element.func = func;
-}
-
 function initialize() {
   const calculator = document.getElementById("calculator");
   calculator.operation = {
@@ -288,7 +215,7 @@ function initialize() {
     ln: (a) => Math.log(a),
     π: () => Math.PI,
     e: () => Math.E,
-    rnd: () => Math.random()
+    rnd: () => Math.random(),
   };
   calculator.answer = "0";
 
@@ -313,7 +240,103 @@ function initialize() {
   addButtonEvent(document.getElementById("back-button"), backEntry);
   addButtonEvent(document.getElementById("decimal-button"), enterDecimal);
   addButtonEvent(document.getElementById("equal-button"), evaluate);
-  addButtonEvent(document.getElementById("answer-button"), getLastAnswer);
+  addButtonEvent(document.getElementById("answer-button"), enterLastAnswer);
+}
+
+function toggleExtension() {
+  const extension = document.getElementById("extension-buttons");
+  extension.classList.toggle("hidden");
+}
+
+function addButtonEvent(element, func) {
+  element.onmousedown = buttonPressed;
+  element.style.cursor = "pointer";
+  element.func = func;
+}
+
+// Called when any calculator button is pressed
+function buttonPressed(event) {
+  event.target.classList.toggle("pressed");
+  const body = document.querySelector("body");
+  body.addEventListener("mouseup", releaseButton);
+
+  event.target.func(event.target.textContent);
+}
+
+// Called when the mouse is released after clicking a calculator button
+function releaseButton(event) {
+  const button = document.querySelector(".pressed");
+  if (button) {
+    button.classList.toggle("pressed");
+  }
+  event.currentTarget.removeEventListener("mouseup", releaseButton);
+}
+
+function keyPressed(event) {
+  const key = event.key;
+  if (key >= "0" && key <= "9") {
+    enterNumber(key);
+  } else {
+    switch (key) {
+      case ".":
+        enterDecimal();
+        break;
+      case "+":
+      case "^":
+        enterOperator(key);
+        break;
+      case "-":
+        enterOperator("–");
+        break;
+      case "*":
+        enterOperator("X");
+        break;
+      case "/":
+        enterOperator("÷");
+        break;
+      case "%":
+      case "e":
+        enterSingleOperator(key);
+        break;
+      case "!":
+        enterSingleOperator("±");
+        break;
+      case "s":
+        enterSingleOperator("√");
+        break;
+      case "l":
+        enterSingleOperator("log");
+        break;
+      case "p":
+        enterSingleOperator("π");
+        break;
+      case "n":
+        enterSingleOperator("ln");
+        break;
+      case "a":
+        enterLastAnswer();
+        break;
+      case "r":
+        enterSingleOperator("rnd");
+        break;
+      case "=":
+      case "Enter":
+        event.preventDefault();
+        evaluate();
+        break;
+      case "Backspace":
+        backEntry();
+        break;
+      case "c":
+      case "Delete":
+        clearEntry();
+        break;
+      case "Tab":
+        event.preventDefault();
+        toggleExtension();
+        break;
+    }
+  }
 }
 
 initialize();
