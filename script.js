@@ -211,6 +211,11 @@ function releaseButton(event) {
   event.currentTarget.removeEventListener("mouseup", releaseButton);
 }
 
+function toggleExtension() {
+  const extension = document.getElementById("extension-buttons");
+  extension.classList.toggle("hidden");
+}
+
 function keyPressed(event) {
   const key = event.key;
   if (key >= "0" && key <= "9") {
@@ -247,12 +252,17 @@ function keyPressed(event) {
       case "c":
         clearEntry();
         break;
+      case "Tab":
+        event.preventDefault();
+        toggleExtension();
+        break;
     }
   }
 }
 
 function addButtonEvent(element, func) {
   element.onmousedown = buttonPressed;
+  element.style.cursor = "pointer";
   element.func = func;
 }
 
@@ -263,15 +273,24 @@ function initialize() {
     "–": (a, b) => a - b,
     X: (a, b) => a * b,
     "÷": (a, b) => a / b,
+    "^": (a, b) => a ** b,
     "%": (a) => a / 100,
     "±": (a) => 0 - a,
+    "√": (a) => a ** 0.5,
+    log: (a) => Math.log10(a),
+    ln: (a) => Math.log(a),
+    π: () => Math.PI,
+    e: () => Math.E,
   };
 
   document.onkeydown = keyPressed;
+  const extensionTab = document.getElementById("extension-tab");
+  extensionTab.onmousedown = toggleExtension;
+  extensionTab.style.cursor = "pointer";
 
-  const numButtons = calculator.getElementsByClassName("num-button");
-  const oprButtons = calculator.getElementsByClassName("opr-button");
-  const singleOprButtons = calculator.getElementsByClassName("s-opr-button");
+  const numButtons = document.getElementsByClassName("num-button");
+  const oprButtons = document.getElementsByClassName("opr-button");
+  const singleOprButtons = document.getElementsByClassName("s-opr-button");
   for (let button of numButtons) {
     addButtonEvent(button, enterNumber);
   }
