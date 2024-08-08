@@ -12,7 +12,7 @@ function evaluate() {
     const result = operate(+a, +b, operator);
 
     history.textContent = history.textContent + " " + entry.textContent + " =";
-    if (result === Infinity || result === NaN) {
+    if (!Number.isFinite(result)) {
       entry.textContent = "Error";
     } else {
       entry.textContent = truncate(result);
@@ -64,7 +64,7 @@ function enterSingleOperator(oprChar) {
   const [a, operator] = parseExpression(entry.textContent);
 
   const result = operate(+a, null, oprChar);
-  if (result === Infinity || result === NaN) {
+  if (!Number.isFinite(result)) {
     entry.textContent = "Error";
   } else {
     entry.textContent = truncate(result) + operator;
