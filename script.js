@@ -219,6 +219,15 @@ function initialize() {
   };
   calculator.answer = "0";
 
+  const body = document.querySelector("body");
+  body.themes = {
+    default: ["#ffffff", "#5c6b73", "#253237", "#9db4c0", "#f26419"],
+    dark: ["#000000", "#ffffff", "#e5e5e5", "#c6ac8f", "#242423"],
+    neopolitan: ["#300400", "#b8f2e6", "#aed9e0", "#faf3dd", "#ffa69e"],
+  };
+  setTheme(body.themes["default"]);
+  document.getElementById("Themes").onchange = changeTheme;
+
   const extension = document.getElementById("extension");
   extension.inAnimation = false;
   extension.onanimationend = animationFlagOff;
@@ -288,6 +297,20 @@ function releaseButton(event) {
     button.classList.toggle("pressed");
   }
   event.currentTarget.removeEventListener("mouseup", releaseButton);
+}
+
+function changeTheme(event) {
+  const theme = document.querySelector("body").themes[event.target.value];
+  setTheme(theme);
+}
+
+function setTheme(theme) {
+  const root = document.querySelector(":root");
+  root.style.setProperty("--primary-color", theme[0]);
+  root.style.setProperty("--secondary-color", theme[1]);
+  root.style.setProperty("--border-color", theme[2]);
+  root.style.setProperty("--body-color", theme[3]);
+  root.style.setProperty("--extension-color", theme[4]);
 }
 
 function keyPressed(event) {
