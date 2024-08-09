@@ -59,7 +59,9 @@ function enterOperator(oprChar) {
 }
 
 function enterSingleOperator(oprChar) {
-  entryCheck(true);
+  if (entryCheck(true) && oprChar === "±") {
+    enterLastAnswer();
+  }
   const [entry] = getDisplay();
   const [a, operator] = parseExpression(entry.textContent);
 
@@ -139,14 +141,16 @@ function parseExpression(expression) {
 // Clears the screen if it meets the below cases
 // Can move entry to history for numeric inputs
 function entryCheck(numeric = false) {
-  clearIfError();
+  if (clearIfError()) {
+    return true;
+  }
   const [entry] = getDisplay();
   if (hasEndOperator(entry.textContent)) {
     if (numeric) {
       entryToHistory();
     }
   } else {
-    clearIfComplete();
+    return clearIfComplete();
   }
 }
 
@@ -154,7 +158,7 @@ function entryCheck(numeric = false) {
 function clearIfComplete() {
   const [, history] = getDisplay();
   if (history.textContent.at(-1) === "=") {
-    clear();
+    return clear();
   }
 }
 
@@ -162,7 +166,7 @@ function clearIfComplete() {
 function clearIfError() {
   const [entry] = getDisplay();
   if (entry.textContent === "Error") {
-    clear();
+    return clear();
   }
 }
 
@@ -170,6 +174,7 @@ function clear() {
   const [entry, history] = getDisplay();
   history.textContent = "";
   entry.textContent = "0";
+  return true;
 }
 
 function entryToHistory() {
