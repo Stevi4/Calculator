@@ -286,11 +286,11 @@ function addButtonEvent(element, func) {
 
 // Called when any calculator button is pressed
 function buttonPressed(event) {
-  event.target.classList.toggle("pressed");
+  event.currentTarget.classList.toggle("pressed");
   const body = document.querySelector("body");
   body.addEventListener("mouseup", releaseButton);
 
-  event.target.func(event.target.textContent);
+  event.currentTarget.func(event.target.textContent);
 }
 
 // Called when the mouse is released after clicking a calculator button

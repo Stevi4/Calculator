@@ -101,10 +101,15 @@ body {
 }
 
 .buttons #sign-button,
-.buttons #back-button,
 .buttons #sub-button {
   font-size: 50px;
   padding-bottom: 5px;
+}
+
+.buttons #back-button svg{
+  width: 50px;
+  height: auto;
+  fill: var(--primary-color);
 }
 
 .buttons #div-button,
